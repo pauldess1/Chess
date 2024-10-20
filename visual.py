@@ -85,33 +85,27 @@ class Visualizer:
         self.show_pieces()
         pygame.display.flip()
 
-    def handle_click(self, board, pos):
+    def handle_click(self, game, pos):
         x, y = pos[1] // TAILLE_CASE, pos[0] // TAILLE_CASE
 
-        if self.selected_piece:
+        if game.selected_piece:
             target_position = (x, y)
-            print('deja selected')
-            print(self.selected_piece)
-            print(self.selected_piece.is_valid_move(target_position, board))
-            self.selected_piece = None
+            game.handle_move(game.selected_piece, target_position)
+            game.selected_piece = None
         else:
-            piece = board.positions[x][y]
-            if piece:
-                self.selected_piece = piece
-                print(self.selected_piece)
+            if game.select_piece((x, y)):
+                print(f"Pièce sélectionnée: {game.selected_piece}")
+            else:
+                print("Pas la pièce du bon joueur")
             
-
-    def run(self):
+    def run(self, game):
         active = True
         while active:
             for event in pygame.event.get():
                 if event.type == pygame.MOUSEBUTTONUP:
                     pos = pygame.mouse.get_pos()
-                    self.handle_click(self.board, pos)
+                    game.handle_click(pos)
                 if event.type == pygame.QUIT:
                     active = False
             self.update()
         self.quit()
-
-    def quit(self):
-        pygame.quit()
