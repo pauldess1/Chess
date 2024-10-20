@@ -10,8 +10,8 @@ This is a Python-based chess game developed using Pygame. The project features a
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/yourusername/chess-game.git
-   cd chess-game
+   git clone https://github.com/pauldess1/Chess.git
+   cd Chess
 
 2. Install the required dependencies:
     '''bash
