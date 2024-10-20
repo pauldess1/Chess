@@ -50,6 +50,7 @@ class Board():
         self.empty_board()
         for piece in self.alive_pieces :
             self.positions[piece.pos[0]][piece.pos[1]] = piece
+        
     
     def first_pos(self):
         for i in range(8):
