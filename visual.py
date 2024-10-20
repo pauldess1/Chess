@@ -13,10 +13,10 @@ TAILLE_CASE = 60
 TAILLE_FENETRE = TAILLE_CASE * TAILLE_ECHIQUIER
 
 class Visualizer:
-    def __init__(self, board):
+    def __init__(self, board, game):
         pygame.init()
         self.board = board
-        self.selected_piece = None
+        self.game = game
         self.fenetre = pygame.display.set_mode((TAILLE_FENETRE, TAILLE_FENETRE))
         pygame.display.set_caption("Chessboard")
         
@@ -76,7 +76,11 @@ class Visualizer:
                     piece_image = self.images['queen_b']
                 elif isinstance(piece, King):
                     piece_image = self.images['king_b']
-            
+
+            if self.game.selected_piece == piece:
+                center_x = y * TAILLE_CASE + TAILLE_CASE // 2
+                center_y = x * TAILLE_CASE + TAILLE_CASE // 2
+                pygame.draw.circle(self.fenetre, GRAY, (center_x, center_y), TAILLE_CASE // 2)
             self.fenetre.blit(piece_image, (y * TAILLE_CASE, x * TAILLE_CASE))
 
     def update(self):
@@ -84,19 +88,6 @@ class Visualizer:
         self.draw_board()
         self.show_pieces()
         pygame.display.flip()
-
-    def handle_click(self, game, pos):
-        x, y = pos[1] // TAILLE_CASE, pos[0] // TAILLE_CASE
-
-        if game.selected_piece:
-            target_position = (x, y)
-            game.handle_move(game.selected_piece, target_position)
-            game.selected_piece = None
-        else:
-            if game.select_piece((x, y)):
-                print(f"Pièce sélectionnée: {game.selected_piece}")
-            else:
-                print("Pas la pièce du bon joueur")
             
     def run(self, game):
         active = True

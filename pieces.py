@@ -17,6 +17,21 @@ class Piece():
 
     def kill(self):
         self.board.alive_pieces.remove(self)
+    
+    def possible_moves(self, board):
+        moves = []
+        x, y = self.pos
+        for i in range(8):
+            if i != x:
+                new_pos = (i, y)
+                if self.is_valid_move(new_pos, board):
+                    moves.append(new_pos)
+            if i != y:
+                new_pos = (x, i)
+                if self.is_valid_move(new_pos, board):
+                    moves.append(new_pos)
+        return moves
+    
         
 class Pawn(Piece):
     def __init__(self, pos, color, board) -> None:
