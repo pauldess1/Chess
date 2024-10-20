@@ -71,10 +71,91 @@ class Pawn(Piece):
 class King(Piece):
     def __init__(self, pos, color, board) -> None:
         super().__init__(pos, color, board)
+        self.firstMove = True
 
+    def is_valid_move(self, new_pos, board):
+        move = pos_to_move(new_pos, self.pos)
+        box = board.positions[new_pos[0]][new_pos[1]]
+
+        if abs(move[0])<2 and abs(move[1])<2:
+            if box is not None :
+                if box.color != self.color :
+                    return True, True
+                else :
+                    return False, False
+            else :
+                return True, False
+        else :
+            return False, False
+                
+    def move(self, target_pos):
+        valid, take = self.is_valid_move(target_pos, self.board)
+        if valid :
+            if take :
+                self.board.positions[target_pos[0]][target_pos[1]].kill()
+            self.pos = target_pos
+            self.board.update()
+            self.first_move_change()
+            return True
+        else :
+            print("Not possible")
+            return False
+        
 class Queen(Piece):
     def __init__(self, pos, color, board) -> None:
         super().__init__(pos, color, board)
+
+    def is_valid_move(self, new_pos, board):
+        move = pos_to_move(new_pos, self.pos)
+        box = board.positions[new_pos[0]][new_pos[1]]
+
+        if move[0] == 0:
+            direction = 1 if move[1] > 0 else -1
+            for y in range(self.pos[1] + direction, new_pos[1], direction):
+                if board.positions[self.pos[0]][y] is not None:
+                    return False, False
+            return True, (box is not None and box.color!=self.color)
+
+        elif move[1] == 0:
+            direction = 1 if move[0] > 0 else -1
+            for x in range(self.pos[0] + direction, new_pos[0], direction):
+                if board.positions[x][self.pos[1]] is not None:
+                    return False, False
+            return True, (box is not None and box.color!=self.color)
+        
+        elif abs(move[0]) == abs(move[1]):
+            direction_x = 1 if move[0] > 0 else -1
+            direction_y = 1 if move[1] > 0 else -1
+            x, y = self.pos
+            for i in range(1, abs(move[0])):
+                x += direction_x
+                y += direction_y
+
+                if board.positions[x][y] is not None:
+                    return False, False 
+
+            if box is not None :
+                if box.color!=self.color :
+                    return True, True
+                else :
+                    return False, False
+            else :
+                return True, False
+        else:
+            return False, False
+    
+    def move(self, target_pos):
+        valid, take = self.is_valid_move(target_pos, self.board)
+        if valid :
+            if take :
+                self.board.positions[target_pos[0]][target_pos[1]].kill()
+            self.pos = target_pos
+            self.board.update()
+            return True
+        else :
+            print("Not possible")
+            return False
+    
 
 class Rook(Piece):
     def __init__(self, pos, color, board) -> None:
@@ -119,6 +200,7 @@ class Bishop(Piece):
 
     def is_valid_move(self, new_pos, board):
         move = pos_to_move(new_pos, self.pos)
+        box = board.positions[new_pos[0]][new_pos[1]]
         direction_x = 1 if move[0] > 0 else -1
         direction_y = 1 if move[1] > 0 else -1
         if abs(move[0]) == abs(move[1]):
@@ -130,9 +212,8 @@ class Bishop(Piece):
                 if board.positions[x][y] is not None:
                     return False, False 
 
-            destination_box = board.positions[new_pos[0]][new_pos[1]]
-            if destination_box is not None :
-                if destination_box.color!=self.color :
+            if box is not None :
+                if box.color!=self.color :
                     return True, True
                 else :
                     return False, False
@@ -161,8 +242,14 @@ class Knight(Piece):
         move = pos_to_move(new_pos, self.pos)
         box = board.positions[new_pos[0]][new_pos[1]]
 
-        if (abs(move[0])==2 and abs(move[0])==1) or (abs(move[0])==1 and abs(move[0])==2) :
-            return True, box!=None
+        if (abs(move[0])==2 and abs(move[1])==1) or (abs(move[0])==1 and abs(move[1])==2) :
+            if box is not None:
+                if box.color != self.color:
+                    return True, True
+                else :
+                    return False, False
+            else :
+                return True, False
         else :
             return False, False
         
