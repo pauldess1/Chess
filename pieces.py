@@ -23,15 +23,12 @@ class Piece():
         x, y = self.pos
         for i in range(8):
             if i != x:
-                new_pos = (i, y)
-                if self.is_valid_move(new_pos, board):
-                    moves.append(new_pos)
-            if i != y:
-                new_pos = (x, i)
-                if self.is_valid_move(new_pos, board):
-                    moves.append(new_pos)
+                for j in range(8):
+                    if j != y :
+                        new_pos = (i, j)
+                        if self.is_valid_move(new_pos, board)[0]:
+                            moves.append(new_pos)
         return moves
-    
         
 class Pawn(Piece):
     def __init__(self, pos, color, board) -> None:
@@ -45,11 +42,11 @@ class Pawn(Piece):
         if self.color == WHITE:
             move = (-move[0], move[1])
 
-        if move == (2, 0) and self.firstMove and box is None:
+        if move == (1, 0) and box is None: 
             return True, False
-        if move == (1, 0) and box is None:
+        if move == (2, 0) and self.firstMove and box is None: 
             return True, False
-        if move in [(1, -1), (1, 1)] and (box is not None and box.color!=self.color):
+        if move in [(1, -1), (1, 1)] and box is not None and box.color != self.color:
             return True, True
         return False, False
     
