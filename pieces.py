@@ -17,6 +17,7 @@ class Piece():
 
     def kill(self):
         self.board.alive_pieces.remove(self)
+        self.board.dead_pieces.append(self)
     
     def possible_moves(self, board):
         moves = []
@@ -73,7 +74,7 @@ class Pawn(Piece):
     def promotion(self):
         if self.check_for_promotion():
             pos, color = self.pos, self.color
-            self.kill()
+            self.board.alive_pieces.remove(self)
             self.board.alive_pieces.append(Queen(pos, color, self.board))
             self.board.update()
             return True

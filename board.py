@@ -122,6 +122,7 @@ class Board():
     def __init__(self) -> None:
         self.positions = [[None] * 8 for _ in range(8)]
         self.alive_pieces = []
+        self.dead_pieces = []
         self.first_pos()
         self.player = WHITE
     
